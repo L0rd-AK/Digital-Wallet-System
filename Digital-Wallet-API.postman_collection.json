@@ -1,8 +1,8 @@
 {
 	"info": {
-		"_postman_id": "digital-wallet-api",
-		"name": "Digital Wallet System API",
-		"description": "Complete API collection for Digital Wallet System with role-based access control. Users can only access their own wallet data, while Admins and Agents can access other users' wallet information for management and service purposes.",
+		"_postman_id": "digital-wallet-api-v2",
+		"name": "Digital Wallet System API - Updated",
+		"description": "Complete API collection for Digital Wallet System with role-based access control. Includes automatic token extraction and proper variable usage. Users can only access their own wallet data, while Admins and Agents can access other users' wallet information for management and service purposes.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -21,12 +21,12 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"user\"\n}"
+							"raw": "{\n  \"name\": \"amit\",\n  \"email\": \"amit@example.com\",\n  \"password\": \"password123\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/users/register",
+							"raw": "http://localhost:5000/api/v1/users/register",
 							"host": [
-								"{{base_url}}"
+								"http://localhost:5000/api/v1"
 							],
 							"path": [
 								"users",
@@ -47,38 +47,12 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Agent Smith\",\n  \"email\": \"agent@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"agent\"\n}"
+							"raw": "{\n  \"name\": \"Agent Amit\",\n  \"email\": \"agent@example.com\",\n  \"password\": \"password123\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/users/register",
+							"raw": "http://localhost:5000/api/v1/users/register",
 							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"users",
-								"register"
-							]
-						}
-					}
-				},
-				{
-					"name": "Register Admin",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"admin\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/users/register",
-							"host": [
-								"{{base_url}}"
+								"http://localhost:5000/api/v1"
 							],
 							"path": [
 								"users",
@@ -97,7 +71,9 @@
 									"if (pm.response.code === 200) {",
 									"    const response = pm.response.json();",
 									"    pm.collectionVariables.set('user_token', response.data.accessToken);",
-									"    pm.collectionVariables.set('user_id', response.data.user._id);",
+									"    pm.collectionVariables.set('user_id', response.data.user._id || response.data.user.userId);",
+									"    console.log('User token set:', response.data.accessToken.substring(0, 20) + '...');",
+									"    console.log('User ID set:', response.data.user._id || response.data.user.userId);",
 									"}"
 								],
 								"type": "text/javascript"
@@ -117,9 +93,9 @@
 							"raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/auth/login",
+							"raw": "http://localhost:5000/api/v1/auth/login",
 							"host": [
-								"{{base_url}}"
+								"http://localhost:5000/api/v1"
 							],
 							"path": [
 								"auth",
@@ -138,7 +114,9 @@
 									"if (pm.response.code === 200) {",
 									"    const response = pm.response.json();",
 									"    pm.collectionVariables.set('agent_token', response.data.accessToken);",
-									"    pm.collectionVariables.set('agent_id', response.data.user._id);",
+									"    pm.collectionVariables.set('agent_id', response.data.user._id || response.data.user.userId);",
+									"    console.log('Agent token set:', response.data.accessToken.substring(0, 20) + '...');",
+									"    console.log('Agent ID set:', response.data.user._id || response.data.user.userId);",
 									"}"
 								],
 								"type": "text/javascript"
@@ -158,49 +136,9 @@
 							"raw": "{\n  \"email\": \"agent@example.com\",\n  \"password\": \"password123\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/auth/login",
+							"raw": "http://localhost:5000/api/v1/auth/login",
 							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"login"
-							]
-						}
-					}
-				},
-				{
-					"name": "Login Admin",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 200) {",
-									"    const response = pm.response.json();",
-									"    pm.collectionVariables.set('admin_token', response.data.accessToken);",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/auth/login",
-							"host": [
-								"{{base_url}}"
+								"http://localhost:5000/api/v1"
 							],
 							"path": [
 								"auth",
@@ -525,6 +463,28 @@
 							]
 						}
 					}
+				},
+				{
+					"name": "Get My Transaction History (Agent)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{agent_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/transactions/my-history",
+							"host": [
+								"http://localhost:5000/api/v1"
+							],
+							"path": [
+								"transactions",
+								"my-history"
+							]
+						}
+					}
 				}
 			]
 		},
@@ -647,7 +607,7 @@
 					}
 				},
 				{
-					"name": "Get User Wallet (Admin/Agent)",
+					"name": "Get User Wallet (Admin)",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -670,7 +630,7 @@
 					}
 				},
 				{
-					"name": "Get User Wallet Balance (Admin/Agent)",
+					"name": "Get User Wallet Balance (Admin)",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -762,6 +722,115 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Additional Endpoints",
+			"item": [
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"oldPassword\": \"password123\",\n  \"newPassword\": \"newpassword123\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/auth/change-password",
+							"host": [
+								"http://localhost:5000/api/v1"
+							],
+							"path": [
+								"auth",
+								"change-password"
+							]
+						}
+					}
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john@example.com\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/auth/forgot-password",
+							"host": [
+								"http://localhost:5000/api/v1"
+							],
+							"path": [
+								"auth",
+								"forgot-password"
+							]
+						}
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"your_refresh_token_here\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/auth/refresh-token",
+							"host": [
+								"http://localhost:5000/api/v1"
+							],
+							"path": [
+								"auth",
+								"refresh-token"
+							]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/auth/logout",
+							"host": [
+								"http://localhost:5000/api/v1"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					}
+				}
+			]
 		}
 	],
 	"variable": [
@@ -801,4 +870,4 @@
 			"type": "string"
 		}
 	]
-} 
+}

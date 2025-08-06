@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { Transaction } from "./transaction.model";
-import { ITransaction, TransactionType, TransactionStatus } from "./transaction.interface";
-import ApiError from "../../errorHelpers/ApiError";
+import { ITransaction, TransactionType } from "./transaction.interface";
+
 
 const createTransaction = async (transactionData: Partial<ITransaction>): Promise<ITransaction> => {
     const transaction = await Transaction.create(transactionData);
