@@ -9,11 +9,16 @@ import { verifyToken } from "../utils/jwt";
 
 export const auth = (...authRoles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const accessToken = req.headers.authorization;
+        const authHeader = req.headers.authorization;
 
-        if (!accessToken) {
+        if (!authHeader) {
             throw new AppError(403, "No Token Received")
         }
+
+        // Extract token from "Bearer <token>" format
+        const accessToken = authHeader.startsWith('Bearer ') 
+            ? authHeader.slice(7) 
+            : authHeader;
 
         const verifiedToken = verifyToken(accessToken, envVars.JWT_ACCESS_SECRET) as JwtPayload
 

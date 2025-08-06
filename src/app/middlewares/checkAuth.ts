@@ -10,12 +10,16 @@ import { verifyToken } from "../utils/jwt";
 export const checkAuth = (...authRoles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const accessToken = req.headers.authorization;
+        const authHeader = req.headers.authorization;
 
-        if (!accessToken) {
+        if (!authHeader) {
             throw new AppError(403, "No Token Recieved")
         }
 
+        // Extract token from "Bearer <token>" format
+        const accessToken = authHeader.startsWith('Bearer ') 
+            ? authHeader.slice(7) 
+            : authHeader;
 
         const verifiedToken = verifyToken(accessToken, envVars.JWT_ACCESS_SECRET) as JwtPayload
 
@@ -32,6 +36,11 @@ export const checkAuth = (...authRoles: string[]) => async (req: Request, res: R
         }
         if (isUserExist.isDeleted) {
             throw new AppError(httpStatus.BAD_REQUEST, "User is deleted")
+        }
+
+        // Check if user is an agent and if they are approved
+        if (isUserExist.role === "agent" && !isUserExist.isApproved) {
+            throw new AppError(httpStatus.FORBIDDEN, "Agent is not approved")
         }
 
         if (!authRoles.includes(verifiedToken.role)) {

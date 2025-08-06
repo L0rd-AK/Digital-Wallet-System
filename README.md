@@ -323,10 +323,10 @@ The system supports six types of transactions:
 curl -X POST http://localhost:5000/api/v1/users/register \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "John Doe",
-    "email": "john@example.com",
-    "password": "password123",
-    "role": "user"
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "role": "user"
   }'
 ```
 
@@ -335,8 +335,8 @@ curl -X POST http://localhost:5000/api/v1/users/register \
 curl -X POST http://localhost:5000/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "john@example.com",
-    "password": "password123"
+  "email": "john@example.com",
+  "password": "password123"
   }'
 ```
 
